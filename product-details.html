@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Your custom CSS styles here */
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f7f7; /* Site theme white background */
+    }
+
+    header {
+      background-color: #16a085; /* Navbar color */
+      color: #fff;
+      padding: 10px;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .nav-links {
+      list-style: none;
+    }
+
+    .nav-links li {
+      display: inline-block;
+      margin-right: 20px;
+    }
+
+    .nav-links li a {
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .product-gallery {
+      width: 100%;
+    }
+
+    #productCarousel {
+      width: 250px !important;
+    }
+
+    .product-gallery img {
+      width: 250px;
+      height: 350px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .product-details-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    .product-details-container h2 {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .product-details-container p {
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .add-to-cart-btn {
+      display: inline-block;
+      background-color: #16a085;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    .add-to-cart-btn:hover {
+      background-color: #138f6a;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">Technology Page</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Product Details Section -->
+  <section class="container mt-4">
+    <div class="row">
+      <div class="col-md-4 product-gallery">
+        <div id="productCarousel" class="carousel slide" data-ride="carousel">
+          <div class="carousel-inner">
+            <!-- Product images will be added dynamically here -->
+          </div>
+          <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#productCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+      </div>
+      <div class="col-md-8 product-details">
+        <!-- Product details will be displayed here -->
+        <h1 class="text-3xl font-bold mb-4" id="productTitle">Product Name</h1>
+        <p class="text-xl font-semibold text-green-500 mb-2" id="productPrice">$100.00</p>
+        <p class="text-gray-600 mb-4" id="productDescription">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+          Numquam, veniam?</p>
+        <a href="#" class="add-to-cart-btn" id="addToCartBtn">Add to Cart</a>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    const productId = new URLSearchParams(window.location.search).get('id');
+    fetch(`https://dummyjson.com/products/${productId}`)
+      .then(res => res.json())
+      .then(productData => {
+        const productImages = productData.images.map((image, index) => `
+          <div class="carousel-item ${index === 0 ? 'active' : ''}">
+            <img src="${image}" alt="${productData.title}" class="mb-4 rounded-lg">
+          </div>
+        `).join('');
+        const productDetails = createProductDetailsHTML(productData);
+
+        const carouselInner = document.querySelector('.carousel-inner');
+        carouselInner.innerHTML = productImages;
+
+        const productTitle = document.getElementById('productTitle');
+        productTitle.textContent = productData.title;
+
+        const productPrice = document.getElementById('productPrice');
+        productPrice.textContent = `$${productData.price}`;
+
+        const productDescription = document.getElementById('productDescription');
+        productDescription.textContent = productData.description;
+
+        const addToCartBtn = document.getElementById('addToCartBtn');
+        addToCartBtn.addEventListener('click', () => {
+          // Implement your logic for adding the product to the cart
+          alert('Product added to cart!');
+        });
+
+        // Initialize Carousel
+        $('#productCarousel').carousel();
+      });
+
+    function createProductDetailsHTML(productData) {
+      // Customize this part according to your preferred HTML structure for product details
+      const html = `
+        <h2 class="text-2xl font-bold mb-2">${productData.title}</h2>
+        <p class="text-gray-600">Price: $${productData.price}</p>
+        <p class="text-gray-600">Description: ${productData.description}</p>
+        <!-- Add more details as needed -->
+      `;
+
+      return html;
+    }
+  </script>
+</body>
+
+</html>

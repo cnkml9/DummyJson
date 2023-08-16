@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technology Page</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Your custom CSS styles here */
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f7f7; /* Site theme white background */
+    }
+
+    header {
+      background-color: #16a085; /* Navbar color */
+      color: #fff;
+      padding: 10px;
+    }
+    navbar{
+      background-color: #16a085; /* Navbar color */
+
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .nav-links {
+      list-style: none;
+    }
+
+    .nav-links li {
+      display: inline-block;
+      margin-right: 20px;
+    }
+
+    .nav-links li a {
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .product-card {
+      background-color: #fff;
+      padding: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .product-card img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .product-card h2 {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .product-card p {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .category-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .category-item {
+      margin-bottom: 8px;
+      cursor: pointer;
+      color: #fff;
+      text-align: center;
+      padding: 8px;
+      background-color: #16a085; /* Category background color */
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .category-item:hover {
+      background-color: #138f6a; /* Category hover color */
+    }
+
+    .pagination {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pagination li {
+      margin: 0 5px;
+    }
+
+    .pagination li a {
+      text-decoration: none;
+      color: #333;
+      padding: 5px 10px;
+      background-color: #fff;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .pagination li a:hover {
+      background-color: #16a085; /* Pagination hover color */
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">Technology Page</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+         <li class="nav-item">
+                  <a class="nav-link" href="index.html">Home</a>
+                </li>
+           
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container py-4">
+    <div class="row">
+      <!-- Sidebar for Categories -->
+      <div class="col-md-3">
+        <h2 class="text-xl font-bold mb-4">Categories</h2>
+        <ul class="category-list" id="categoryList">
+          <!-- Categories will be dynamically added here -->
+        </ul>
+      </div>
+
+      <!-- Product List -->
+      <div class="col-md-9">
+        <div class="row" id="productContainer">
+          <!-- Product Cards will be dynamically added here -->
+        </div>
+        <!-- Pagination -->
+        <ul class="pagination justify-content-center" id="pagination">
+          <!-- Pagination links will be dynamically added here -->
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Fetch products and render the product list and categories
+    fetch('https://dummyjson.com/products')
+      .then(res => res.json())
+      .then(data => {
+        const products = data.products;
+        const categories = getUniqueCategories(products);
+  
+        // Render the categories in the sidebar
+        const categoryList = document.getElementById('categoryList');
+        categories.forEach(category => {
+          const listItem = document.createElement('li');
+          listItem.textContent = category;
+          listItem.classList.add('cursor-pointer', 'category-item');
+          listItem.addEventListener('click', () => filterProductsByCategory(category));
+          categoryList.appendChild(listItem);
+        });
+  
+        // Render all products
+        renderProducts(products);
+      });
+  
+    // Function to get unique categories from products
+    function getUniqueCategories(products) {
+      const categories = products.map(product => product.category);
+      return [...new Set(categories)];
+    }
+  
+    // Function to render product cards
+    function renderProducts(products) {
+      const productContainer = document.getElementById('productContainer');
+      productContainer.innerHTML = ''; // Clear the previous content
+  
+      products.forEach(product => {
+        const productCard = createProductCard(product);
+        productContainer.appendChild(productCard);
+      });
+    }
+  
+    // Function to filter products by category
+    function filterProductsByCategory(category) {
+      fetch('https://dummyjson.com/products')
+        .then(res => res.json())
+        .then(data => {
+          const products = data.products;
+          const filteredProducts = products.filter(product => product.category === category);
+          renderProducts(filteredProducts);
+        });
+    }
+  
+    // Function to create product card element
+    function createProductCard(product) {
+      const card = document.createElement('div');
+      card.classList.add('col-md-3', 'product-card');
+      card.innerHTML = `
+        <img src="${product.thumbnail}" alt="${product.title}" class="mb-4 rounded-lg">
+        <h2 class="text-xl font-bold mb-2">${product.title}</h2>
+        <p class="text-gray-600">Price: $${product.price}</p>
+        <p class="text-gray-600">Rating: ${product.rating}</p>
+        <p class="text-gray-600">Stock: ${product.stock}</p>
+      `;
+  
+      card.addEventListener('click', () => {
+        // Redirect to the product details page with the product ID
+        window.location.href = `${window.location.origin}/product-details.html?id=${product.id}`;
+      });
+  
+      return card;
+    }
+  </script>
+
+</body>
+</html>

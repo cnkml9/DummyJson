@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+  <style>
+    /* Custom CSS */
+body {
+  padding-bottom: 60px; /* Navbar yüksekliği için padding ekleyelim */
+}
+
+.container {
+  max-width: 800px;
+}
+
+/* DataTables için tema uyumu */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #deeaf6 !important;
+  color: white !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background-color: #deeaf6 !important;
+}
+
+/* Navbar için stil */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar-brand {
+  font-size: 24px;
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+  </style>
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Admin Panel</a>
+      </nav>
+    
+      <div class="container mt-4">
+        <h1 class="mb-4">Ürün Listesi</h1>
+        <table id="productTable" class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Price</th>
+              <th>Discount Percentage</th>
+              <th>Rating</th>
+              <th>Actions</th> <!-- Detay düğmesi için yeni sütun ekleme -->
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+  <script>const apiUrl = 'https://dummyjson.com/products';
+    let products = [];
+    
+    async function fetchProducts() {
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        products = data.products;
+        displayProducts();
+      } catch (error) {
+        console.error('Veri alınırken hata oluştu:', error);
+      }
+    }
+    
+    function displayProducts() {
+      const tableBody = $('#productTable tbody');
+      tableBody.empty();
+    
+      products.forEach(product => {
+        const row = $('<tr>');
+        row.append($('<td>').text(product.title));
+        row.append($('<td>').text(product.description));
+        row.append($('<td>').text('$' + product.price));
+        row.append($('<td>').text(product.discountPercentage + '%'));
+        row.append($('<td>').text(product.rating));
+        
+        // Detay düğmesi ekleme
+        const detailButton = $('<button>').text('Detaylar').addClass('btn btn-primary btn-sm ml-2');
+        detailButton.click(() => showDetail(product.id));
+        row.append($('<td>').append(detailButton));
+        
+        tableBody.append(row);
+      });
+    
+      // DataTables'in etkinleştirilmesi
+      $('#productTable').DataTable();
+    }
+    
+    function showDetail(productId) {
+      // Dinamik olarak detay sayfasına yönlendirme
+      window.location.href = 'detay.html?id=' + productId;
+    }
+    
+    window.addEventListener('load', fetchProducts);
+    </script>
+</body>
+</html>
